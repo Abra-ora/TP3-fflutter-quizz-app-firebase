@@ -30,7 +30,6 @@ class QuizzManagement {
     return _currentIndex <= _questions.length - 1;
   }
 
-
   answerIsCorrect(bool answer) {
     return getCurrentQuestion().answer == answer;
   }
@@ -44,6 +43,7 @@ class QuizzManagement {
   addScore(bool answer) {
     if (answerIsCorrect(answer)) {
       _score += 10;
+      print("score: $_score");
     }
   }
 

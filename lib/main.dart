@@ -8,7 +8,6 @@ import 'package:quizz_app_with_firebase_db/data/repositories/questions_repositor
 import 'package:quizz_app_with_firebase_db/presentation/pages/add_question_page.dart';
 import 'package:quizz_app_with_firebase_db/presentation/pages/home_page.dart';
 import 'package:quizz_app_with_firebase_db/presentation/pages/quizz_page.dart';
-import 'package:quizz_app_with_firebase_db/presentation/pages/result.dart';
 import 'data/dataproviders/firebase_api.dart';
 import 'firebase_options.dart';
 
@@ -30,19 +29,10 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    List<QuestionModel> questions = [];
-    // final quizzQuestionsBloc = QuizzQuestionsBloc(
-    //     questionsRepository: QuestionsRepository(firebaseApi: FirebaseApi()), nextQuestionBloc: NextQuestionBloc());
-     
-    // quizzQuestionsBloc.add(getQuizzQuestionsEvent());
-    // if (quizzQuestionsBloc.state is QuestionLoaded) {
-    //   questions = (quizzQuestionsBloc.state as QuestionLoaded).questions;
-    // }
-     
+    
     return BlocBuilder<DarkModeCubit, DarkModeState>(
       builder: (context, state) {
         final quizzQuestionsBloc = QuizzQuestionsBloc(questionsRepository: QuestionsRepository(firebaseApi: FirebaseApi()));
-        // quizzQuestionsBloc.add(getQuizzQuestionsEvent());
         return MaterialApp(title: 'Flutter Demo', theme: state.theme, 
         routes: {
           '/': (context) => HomePage(),
@@ -51,10 +41,6 @@ class MyApp extends StatelessWidget {
             value: quizzQuestionsBloc,
             child: const QuizzPage(),
           ),
-          '/result':(context) => BlocProvider.value(
-            value: quizzQuestionsBloc, 
-            child: QuizzResult()
-            ),
         });
       },
     );

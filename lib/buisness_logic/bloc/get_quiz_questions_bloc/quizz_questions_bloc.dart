@@ -38,15 +38,13 @@ class QuizzQuestionsBloc extends Bloc<QuestionFormEvent, QuizzQuestionsState> {
       }
     });
 
-    // on<QuizzFinishedEvent>((event, emit) {
-    //   if (quizzManagement.quizzIsFinished()) {
-    //     emit(QuizzFinished(quizzManagement.score));
-    //   }
-    // });
+    on<QuizzFinishedEvent>((event, emit) {
+        emit(QuizzFinished(quizzManagement.score));
+    });
 
+  
     on<ResetQuizzEvent>((event, emit) {
       quizzManagement.reset();
-      // emit(QuizzQuestionsInitial());
     });
   }
 }

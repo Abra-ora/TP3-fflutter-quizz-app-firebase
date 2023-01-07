@@ -1,8 +1,4 @@
-import 'dart:js';
-
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:quizz_app_with_firebase_db/buisness_logic/bloc/get_quiz_questions_bloc/quizz_questions_bloc.dart';
 import 'package:quizz_app_with_firebase_db/presentation/widgets/button_widget.dart';
 import '../widgets/switch_widget.dart';
 

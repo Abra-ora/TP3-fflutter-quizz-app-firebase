@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:quizz_app_with_firebase_db/buisness_logic/bloc/get_quiz_questions_bloc/quizz_questions_bloc.dart';
 import 'package:quizz_app_with_firebase_db/data/models/question_model.dart';
-import 'package:quizz_app_with_firebase_db/presentation/pages/result.dart';
 import 'package:quizz_app_with_firebase_db/presentation/widgets/responseButtonWidget.dart';
+
+import '../widgets/button_widget.dart';
 
 class QuizzPage extends StatefulWidget {
   const QuizzPage({super.key});
@@ -23,8 +24,26 @@ class _QuizzPageState extends State<QuizzPage>
 
   @override
   Widget build(BuildContext context) {
-    final quizzQuestionsBloc = BlocProvider.of<QuizzQuestionsBloc>(context);
+    int totalQuestions = 100;
+    int score = 0;
+    String mention = "";
 
+    getMention(int score) {
+      var percentage = score / totalQuestions * 100;
+      String mention = "";
+      if (percentage >= 90) {
+        mention = "Excellent";
+      } else if (percentage >= 80 && percentage < 90) {
+        mention = "Très bien";
+      } else if (percentage >= 60 && percentage < 80) {
+        mention = "Bien";
+      } else if (percentage < 60) {
+        mention = "Perseverer!";
+      }
+      return mention;
+    }
+
+    final quizzQuestionsBloc = BlocProvider.of<QuizzQuestionsBloc>(context);
     quizzQuestionsBloc.add(getQuizzQuestionsEvent());
 
     return Scaffold(
@@ -40,6 +59,9 @@ class _QuizzPageState extends State<QuizzPage>
           } else if (state is ToNextQuestion) {
             currentQuestionIndex = state.questionIndex;
             scoreKeeper = state.scoreKeeper;
+          }else if(state is QuizzFinished){
+            score = state.score;
+            mention = getMention(score);
           }
         }, builder: (context, state) {
           if (state is QuestionLoaded || state is ToNextQuestion) {
@@ -86,9 +108,6 @@ class _QuizzPageState extends State<QuizzPage>
                             errorWidget: (context, url, error) =>
                                 const Icon(Icons.error),
                             fit: BoxFit.fitWidth,
-
-                            // width: MediaQuery.of(context).size.width - 12,
-                            // height: MediaQuery.of(context).size.height / 2.2,
                           ),
                         ],
                         //  )
@@ -126,19 +145,46 @@ class _QuizzPageState extends State<QuizzPage>
                 ),
               ],
             );
+          } else if (state is QuizzFinished) {
+            print("Quizzppage : In quizz finished state");
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Votre score est : $score/$totalQuestions",
+                    style: const TextStyle(
+                      fontSize: 24,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  Text(
+                    mention,
+                    style: const TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+                  buttonWidget(
+                      text: "Recommencer le quiz",
+                      textColor: Colors.white,
+                      onPressed: (() => {
+                            quizzQuestionsBloc.add(ResetQuizzEvent()),
+                            Navigator.pushNamed(context, '/'),
+                          }))
+                ],
+              ),
+            );
           } else if (state is QuestionLoading) {
             print("In loading state");
             return const Center(child: CircularProgressIndicator());
-          } else if (state is QuizzFinished) {
-            print("In finished state");
-            Navigator.pushNamed(context, '/result');
-            return const SnackBar(content: Text("Quizz terminé"));
           } else if (state is QuestionLoadingError) {
             print("In error state");
             Navigator.pushNamed(context, "/");
             return SnackBar(content: Text(state.error));
           } else {
-            print("In default state $state");
+            print("quizz_question_widget: In default state $state");
             return const Center(child: Text("Error"));
           }
         }));
