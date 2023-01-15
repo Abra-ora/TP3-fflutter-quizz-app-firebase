@@ -9,6 +9,7 @@ part 'quizz_questions_state.dart';
 
 class QuizzQuestionsBloc extends Bloc<QuestionFormEvent, QuizzQuestionsState> {
   final QuestionsRepository questionsRepository;
+  
   QuizzManagement quizzManagement = QuizzManagement(0, 0, [], []);
 
   QuizzQuestionsBloc({required this.questionsRepository})
@@ -39,12 +40,12 @@ class QuizzQuestionsBloc extends Bloc<QuestionFormEvent, QuizzQuestionsState> {
     });
 
     on<QuizzFinishedEvent>((event, emit) {
-        emit(QuizzFinished(quizzManagement.score));
+      emit(QuizzFinished(quizzManagement.score));
     });
 
-  
     on<ResetQuizzEvent>((event, emit) {
       quizzManagement.reset();
     });
   }
+
 }

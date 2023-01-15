@@ -22,6 +22,7 @@ class _QuizzPageState extends State<QuizzPage>
   List<Icon> scoreKeeper = [];
   int currentQuestionIndex = 0;
 
+
   @override
   Widget build(BuildContext context) {
     int totalQuestions = 100;
@@ -50,6 +51,13 @@ class _QuizzPageState extends State<QuizzPage>
         appBar: AppBar(
           title: const Text("Quizz : questions et réponses"),
           backgroundColor: Colors.grey[850],
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              quizzQuestionsBloc.add(ResetQuizzEvent());
+              Navigator.pushNamed(context, '/');
+            },
+          ),
         ),
         body: BlocConsumer<QuizzQuestionsBloc, QuizzQuestionsState>(
             listener: (context, state) {
@@ -59,7 +67,7 @@ class _QuizzPageState extends State<QuizzPage>
           } else if (state is ToNextQuestion) {
             currentQuestionIndex = state.questionIndex;
             scoreKeeper = state.scoreKeeper;
-          }else if(state is QuizzFinished){
+          } else if (state is QuizzFinished) {
             score = state.score;
             mention = getMention(score);
           }
@@ -96,6 +104,9 @@ class _QuizzPageState extends State<QuizzPage>
                             style: const TextStyle(
                               fontSize: 20.0,
                             ),
+                          ),
+                          const SizedBox(
+                            height: 10,
                           ),
                           const SizedBox(
                             height: 15,
@@ -136,7 +147,7 @@ class _QuizzPageState extends State<QuizzPage>
                           backgroundColor: Colors.red,
                           onPressed: (() => {
                                 quizzQuestionsBloc
-                                    .add(ToNextQuestionEvent(questions, false))
+                                    .add(ToNextQuestionEvent(questions, false)),
                               }))),
                 ),
                 Row(
@@ -176,7 +187,7 @@ class _QuizzPageState extends State<QuizzPage>
                 ],
               ),
             );
-          } else if (state is QuestionLoading) {
+          } else if (state is QuestionLoading || questions.isEmpty) {
             print("In loading state");
             return const Center(child: CircularProgressIndicator());
           } else if (state is QuestionLoadingError) {
@@ -188,5 +199,10 @@ class _QuizzPageState extends State<QuizzPage>
             return const Center(child: Text("Error"));
           }
         }));
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

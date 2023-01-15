@@ -43,7 +43,6 @@ class QuizzManagement {
   addScore(bool answer) {
     if (answerIsCorrect(answer)) {
       _score += 10;
-      print("score: $_score");
     }
   }
 
